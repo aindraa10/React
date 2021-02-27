@@ -14,6 +14,9 @@ import {
   View,
   Text,
   StatusBar,
+  Button,
+  TextInput,
+  Alert,
 } from 'react-native';
 
 import {
@@ -23,86 +26,145 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { event } from 'react-native-reanimated';
+import HomeScreen from './Home';
+
+const Stack = createStackNavigator()
 
 const App: () => React$Node = () => {
   return (
     <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={ styles.scrollView }>
-          <Header />
-          { global.HermesInternal == null ? null : (
-            <View style={ styles.engine }>
-              <Text style={ styles.footer }>Engine: Hermes</Text>
-            </View>
-          ) }
-          <View style={ styles.body }>
-            <Text>Hello Word..</Text>
-            <View style={ styles.sectionContainer }>
-              <Text style={ styles.sectionTitle }>See Your Changes</Text>
-              <Text style={ styles.sectionDescription }>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={ styles.sectionContainer }>
-              <Text style={ styles.sectionTitle }>Debug</Text>
-              <Text style={ styles.sectionDescription }>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={ styles.sectionContainer }>
-              <Text style={ styles.sectionTitle }>Learn More</Text>
-              <Text style={ styles.sectionDescription }>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={ HomeScreen } />
+          <Stack.Screen name="Details" component={ DetailsScreen } />
+          <Stack.Screen name="Kalkulator" component={ KalkulatorScreen } />
+
+        </Stack.Navigator>
+      </NavigationContainer>
     </>
   );
 };
 
+
+const DetailsScreen = ( { route, navigation } ) => {
+  const { email, password, hasil, bilPertama, bilKedua } = route.params
+  // if (hasill %==0){
+  //   (+hasil, 'Bilangan Ganjil')
+  // }else{
+  //   ('Bilangan Genap')
+  // }
+  return (
+    <View style={ { flex: 1, alignItems: 'center', justifyContent: 'center' } }>
+      <Text>Halloo</Text>
+      <Text>{ email }</Text>
+      <Text>{ bilPertama }</Text>
+      <Text>{ bilKedua }</Text>
+      <Text>{ hasil }</Text>
+      <Text>{ hasil % 2 === 0 ? 'Adalah Bilangan Genap' : 'Adalah Bilangan Ganjil' }</Text>
+      <View style={ styles.line }></View>
+      <Button
+        title="Back to Kalkulator"
+        onPress={ () => navigation.navigate( 'Kalkulator' ) }
+      />
+      <Button
+        title="Back to Home Screen"
+        onPress={ () => navigation.navigate( 'Home' ) }
+      />
+    </View>
+  );
+}
+
+
+const KalkulatorScreen = ( { navigation } ) => {
+  const [ bilPertama, setBilaPertama ] = React.useState( 0 )
+  const [ bilKedua, setBilaKedua ] = React.useState( 0 )
+
+
+  const hasilTambah = () => {
+    const hasil = parseInt( bilPertama ) + parseInt( bilKedua )
+    navigateToDetails( hasil )
+  }
+  const hasilKurang = () => {
+    const hasil = parseInt( bilPertama ) - parseInt( bilKedua )
+    // Alert.alert( `${ hasil }` )
+    navigateToDetails( hasil )
+  }
+  const hasilKali = () => {
+    const hasil = parseInt( bilPertama ) * parseInt( bilKedua )
+    // Alert.alert( `${ hasil }` )
+    navigateToDetails( hasil )
+  }
+  const hasilBagi = () => {
+    const hasil = parseInt( bilPertama ) / parseInt( bilKedua )
+    // Alert.alert( `${ hasil }` )
+    navigateToDetails( hasil )
+  }
+
+  const navigateToDetails = ( hasil ) => {
+    if ( bilPertama === 0 || bilKedua === 0 || isNaN( hasil ) || typeof hasil === 'string' ) {
+
+      Alert.alert( 'Isi atuh bos' )
+    } else {
+      navigation.navigate( 'Details', {
+        hasil: hasil,
+      } )
+      setBilaPertama( "" );
+      setBilaKedua( "" );
+    }
+  }
+
+
+  return (
+    <View>
+      <View style={ styles.inputText }></View>
+      <TextInput placeholder='Bilangan Pertama'
+        value={ bilPertama }
+        onChangeText={ setBilaPertama }
+        style={ styles.inputText }
+      />
+      <TextInput placeholder='Bilangan Kedua'
+        value={ bilKedua }
+        onChangeText={ setBilaKedua }
+        style={ styles.inputText }
+      />
+      <View style={ styles.line }></View>
+      <Button title='Tambah' onPress={ hasilTambah } />
+      <Button title='Kurang' onPress={ hasilKurang } />
+      <Button title='Kali' onPress={ hasilKali } />
+      <Button title='Bagi' onPress={ hasilBagi } />
+      <View style={ styles.line }></View>
+      <Button
+        title="Back to Home Screen"
+        onPress={ () => navigation.goBack() }
+      />
+
+    </View >
+  )
+
+}
+
+
 const styles = StyleSheet.create( {
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  h1: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'blue'
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+  inputText: {
+    borderWidth: 1,
+    marginBottom: 12,
+    borderRadius: 25,
+    paddingHorizontal: 18
   },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-} );
+  line: {
+    height: 2,
+    backgroundColor: "white",
+    marginVertical: 20
+  }
+
+} )
 
 export default App;
