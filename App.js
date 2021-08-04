@@ -29,7 +29,9 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { event } from 'react-native-reanimated';
-import HomeScreen from './Home';
+import HomeScreen from './Screens/Home/Home';
+import DetailsScreen from './Screens/Detail/Detail';
+import KalkulatorScreen from './Screens/Kalkulator/Kalkulator';
 
 const Stack = createStackNavigator()
 
@@ -48,103 +50,6 @@ const App: () => React$Node = () => {
   );
 };
 
-
-const DetailsScreen = ( { route, navigation } ) => {
-  const { email, password, hasil, bilPertama, bilKedua } = route.params
-  // if (hasill %==0){
-  //   (+hasil, 'Bilangan Ganjil')
-  // }else{
-  //   ('Bilangan Genap')
-  // }
-  return (
-    <View style={ { flex: 1, alignItems: 'center', justifyContent: 'center' } }>
-      <Text>Halloo</Text>
-      <Text>{ email }</Text>
-      <Text>{ bilPertama }</Text>
-      <Text>{ bilKedua }</Text>
-      <Text>{ hasil }</Text>
-      <Text>{ hasil % 2 === 0 ? 'Adalah Bilangan Genap' : 'Adalah Bilangan Ganjil' }</Text>
-      <View style={ styles.line }></View>
-      <Button
-        title="Back to Kalkulator"
-        onPress={ () => navigation.navigate( 'Kalkulator' ) }
-      />
-      <Button
-        title="Back to Home Screen"
-        onPress={ () => navigation.navigate( 'Home' ) }
-      />
-    </View>
-  );
-}
-
-
-const KalkulatorScreen = ( { navigation } ) => {
-  const [ bilPertama, setBilaPertama ] = React.useState( 0 )
-  const [ bilKedua, setBilaKedua ] = React.useState( 0 )
-
-
-  const hasilTambah = () => {
-    const hasil = parseInt( bilPertama ) + parseInt( bilKedua )
-    navigateToDetails( hasil )
-  }
-  const hasilKurang = () => {
-    const hasil = parseInt( bilPertama ) - parseInt( bilKedua )
-    // Alert.alert( `${ hasil }` )
-    navigateToDetails( hasil )
-  }
-  const hasilKali = () => {
-    const hasil = parseInt( bilPertama ) * parseInt( bilKedua )
-    // Alert.alert( `${ hasil }` )
-    navigateToDetails( hasil )
-  }
-  const hasilBagi = () => {
-    const hasil = parseInt( bilPertama ) / parseInt( bilKedua )
-    // Alert.alert( `${ hasil }` )
-    navigateToDetails( hasil )
-  }
-
-  const navigateToDetails = ( hasil ) => {
-    if ( bilPertama === 0 || bilKedua === 0 || isNaN( hasil ) || typeof hasil === 'string' ) {
-
-      Alert.alert( 'Isi atuh bos' )
-    } else {
-      navigation.navigate( 'Details', {
-        hasil: hasil,
-      } )
-      setBilaPertama( "" );
-      setBilaKedua( "" );
-    }
-  }
-
-
-  return (
-    <View>
-      <View style={ styles.inputText }></View>
-      <TextInput placeholder='Bilangan Pertama'
-        value={ bilPertama }
-        onChangeText={ setBilaPertama }
-        style={ styles.inputText }
-      />
-      <TextInput placeholder='Bilangan Kedua'
-        value={ bilKedua }
-        onChangeText={ setBilaKedua }
-        style={ styles.inputText }
-      />
-      <View style={ styles.line }></View>
-      <Button title='Tambah' onPress={ hasilTambah } />
-      <Button title='Kurang' onPress={ hasilKurang } />
-      <Button title='Kali' onPress={ hasilKali } />
-      <Button title='Bagi' onPress={ hasilBagi } />
-      <View style={ styles.line }></View>
-      <Button
-        title="Back to Home Screen"
-        onPress={ () => navigation.goBack() }
-      />
-
-    </View >
-  )
-
-}
 
 
 const styles = StyleSheet.create( {
